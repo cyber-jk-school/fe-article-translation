@@ -41,3 +41,48 @@ Frontend 분야에 많은 한국어 문서가 있지만, 최신 기술이나 Rea
 3. 일정 내에 Article 번역하여 `/article 제목`에 파일 형식(.txt, .md)으로 올리기
 4. Pull Request 한 후 짝지들이 간단 리뷰해주기
 5. 스터디에서 번역 중 궁금한 내용 나누기
+
+<br/>
+
+---
+
+<br/>
+
+### 👨‍👩‍👧‍👦 멋쟁이 팀원들
+
+<table>
+  <tr>
+    <td>
+        <a href="https://github.com/dustmddus">
+            <img src="https://avatars.githubusercontent.com/u/82739503?v=4" width="100px" />
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/Jungjjeong">
+            <img src="https://avatars.githubusercontent.com/u/72294509?v=4" width="100px" />
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/GeonWooPaeng">
+            <img src="https://avatars.githubusercontent.com/u/53526987?v=4" width="100px" />
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/qq8721443">
+            <img src="https://avatars.githubusercontent.com/u/61747121?v=4" width="100px" />
+        </a>
+    </td>
+  </tr>
+  <tr>
+    <td><b>신구라미</b></td>
+    <td><b>야무지영</b></td>
+    <td><b>팽글팽글</b></td>
+    <td><b>탐쓴...</b></td>
+  </tr>
+  <tr>
+    <td><b>Frontend Developer</b></td>
+    <td><b>Frontend Developer</b></td>
+    <td><b>Frontend Developer</b></td>
+    <td><b>Frontend Developer</b></td>
+  </tr>
+</table>
