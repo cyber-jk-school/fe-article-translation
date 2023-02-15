@@ -47,7 +47,7 @@ function ExpensiveTree() {
 
 문제는 `App` 내부에서 `color`를 변경할 때마다 `<ExpensiveTree />`를 인위적으로 딜레이시켜 리렌더링되면 매우 느려질 것이다.
 
-[`memo()`](https://codesandbox.io/s/amazing-shtern-61tu4?file=/src/App.js)를 써서 마무할 수 있지만, 이에 관해서 많은 Article이 많으니 시간을 아끼겠습니다. 2가지 해결책을 소개하겠습니다.
+[`memo()`](https://codesandbox.io/s/amazing-shtern-61tu4?file=/src/App.js)를 써서 마무리할 수 있지만, 이에 관해서 많은 Article이 많으니 시간을 아끼겠습니다. 2가지 해결책을 소개하겠습니다.
 
 ### Solution 1: State를 아래로 내리기
 
