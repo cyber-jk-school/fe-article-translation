@@ -33,7 +33,7 @@ cocalendarEvent.attendees === copied.attendees; // false
 
 - 무한 중첩 객체와 배열 복제
 - 복제 순환 참조
-- `Date`, `Set`, `Map`, `Error`, `RegExp`, `ArrayBuffer`, `Blob`, `File`, `ImageData`, [그 이상](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types)과 같은 다양한 JavaScript 유형 복제
+- `Date`, `Set`, `Map`, `Error`, `RegExp`, `ArrayBuffer`, `Blob`, `File`, `ImageData`, [그 이상](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types)과 같은 다양한 JavaScript types 복제
 - 모든 [transferable objects](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects) 변환
 
 예를 들어, 이러한 미친 코드도 정확히 동작합니다:
@@ -164,3 +164,115 @@ const veryProblematicCopy = JSON.parse(JSON.stringify(kitchenSink));
 그래서 이 방법은 우리 요구사항이 할 수 있는 일에 맞으면 훌륭한 방법일 수 있지만 `structuredClone`(aka 위에서 실패한 모든 일)로 하는 많은 것들을 이 방법으로는 못할 수 있습니다.
 
 ## 왜 `_.cloneDeep`가 아닙니까?
+
+지금까지, 이 문제를 해결하는 가장 보편적인 방법은 Lodash's `cloneDeep`을 사용하는 것이었습니다.
+
+실제로 이것은 예상대로 동작합니다.:
+
+```js
+import cloneDeep from 'lodash/cloneDeep';
+
+const calendarEvent = {
+  title: 'Builder.io Conf',
+  date: new Date(123),
+  attendees: ['Steve'],
+};
+
+// ✅ All good!
+const clonedEvent = structuredClone(calendarEvent);
+const LodashClonedEvent = cloneDeep(calendarEvent);
+```
+
+그러나 하나의 주의사항이 있습니다. 저의 IDE에서 import한 kb 비용을 출력해주는 [Import Cost](https://marketplace.visualstudio.com/items?itemName=wix.vscode-import-cost) 확장자에 따르면 이 함수는 전체 17.4kb minified (5.3kb gzipped)로 제공합니다.:
+
+![image2](https://user-images.githubusercontent.com/53526987/219849612-2aa00230-3cd8-4733-9c1c-095f724abf04.png)
+
+단지 이 함수만 import한다고 가정해봅시다. 만약 tree shaking이 항상 원하는 대로 동작하지 않는 것을 알지 못하고 더 일반적인 방법으로 import한다면 이 하나의 함수에 최대 [25kb](https://bundlephobia.com/package/lodash@4.17.21)를 사용하게 될 것입니다. 😱
+
+![image3](https://user-images.githubusercontent.com/53526987/219850090-18da1e14-329f-46f2-bbbd-614fa2bcb929.png)
+
+이것이 누가에게도 세상의 종말은 아니지만, 브라우저에 이미 `structuredClone`이 내장되어 있는 경우에는 필요하지 않습니다.
+
+## `structuredClone`에서 복제할 수 없는 것
+
+### 함수들은 복제할 수 없습니다.
+
+`DataCloneError` 예외가 발생합니다.:
+
+```js
+// 🚩 Error!
+structuredClone({ fn: () => {} });
+```
+
+### DOM nodes
+
+`DataCloneError` 예외가 발생합니다.:
+
+```js
+// 🚩 Error!
+structuredClone({ el: document.body });
+```
+
+### Property descriptors, setters, and getters
+
+게다가 유사한 metadata와 유사한 기능은 복제되지 않습니다.
+
+예를 들어, getter에서 결과 값은 복제되지만 getter 함수 자체(또는 다른 property metadata)는 복제되지 않습니다.:
+
+```js
+structuredClone({
+  get foo() {
+    return 'bar';
+  },
+});
+// Becomes: { foo: 'bar' }
+```
+
+### Object prototypes(객체 속성들)
+
+prototype chain은 이어나가지거나 복제되지 않습니다. 따라서 `MyClass`의 인스턴스를 복제하면, 이 복제된 객체는 더이상 이 클래스의 인스턴스가 아닙니다. (그러나 이 클래스의 모든 properties들은 복제됩니다.)
+
+```js
+class MyClass {
+  foo = 'bar';
+  myMethod() {
+    /* ... */
+  }
+}
+const myClass = new MyClass();
+
+const cloned = structuredClone(myClass);
+// Becomes: { foo: 'bar' }
+
+cloned instanceof myClass; // false
+```
+
+### 지원되는 types의 전체 목록
+
+단순하게, 아래 목록에 없는 것들은 복제할 수 없습니다.:
+
+[JS Build-ins](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#javascript_types)
+
+`Array`, `ArrayBuffer`, `Boolean`, `DataView`, `Date`, `Error`types (아래에 구체적으로 나열된 것들), `Map`, `Object` 그러나 평범한 객체만 (예: 객체 리터럴), [Primitive types](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values), `symbol`을 제외한 원시유형(`number`, `string`, `null`, `undefined`, `boolean`, `BigInt`), `RegExp`, `Set`, `TypedArray`
+
+Error Types
+
+`Error`, `EvalError`, `RangeError`, `ReferenceError`, `SyntaxError`, `TypeError`, `URIError`
+
+[Web/API types](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#webapi_types)
+
+`AudioData`, `Blob`, `CryptoKey`, `DOMException`, `DOMMatrix`, `DOMMatrixReadOnly`, `DOMPoint`, `DomQuad`, `File`, `FileList`, `FileSystemDirectoryHandle`, `FileSystemFileHandle`, `FileSystemHandle`, `ImageBitmap`, `ImageData`, `RTCCertificate`, `VideoFrame`
+
+## 브라우저 및 런타임 지원
+
+여기에 가장 중요한 부분이 있습니다. `structuredClone`은 모든 주요 브라우저들과 심지어 Node.js및 Deno에서도 지원이 됩니다.
+
+지원이 더 제한적인 웹 작업자들에 대한 주의 사항에 유의해야 됩니다.
+
+![image4](https://user-images.githubusercontent.com/53526987/219856782-01851be7-5e15-4986-8994-7f75df1e6253.png)
+
+출처: [MDN](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone)
+
+## 결말
+
+오랜 시간이 흘렀지만 마침내 우리는 JavaScript에서 객체를 깊은 복사할 수 있는 `structuredClone`을 가지게 되었습니다. 고마워, [Surma](https://web.dev/structured-clone/).
