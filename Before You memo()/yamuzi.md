@@ -30,7 +30,7 @@
 
 > **In this post, I want to share two different techniques.** They’re surprisingly basic, which is why people rarely realize they improve rendering performance.
 
-이 글에서는, 저는 두 가지의 각각 다른 방법들을 소개하려 합니다. 이 방법들은 놀랍게도 기초적이기 때문에, 사람들은 렌더링 성능 개선이 되었음을 드물게 알아차리곤 합니다.
+이 글에서는, 저는 두 가지의 각각 다른 방법들을 소개하려 합니다. 이 방법들은 놀랍게도 기초적이기 때문에, 사람들은 렌더링 성능 개선이 되었음을 거의 알아차리지 못합니다.
 
 > **These techniques are complementary to what you already know!** They don’t replace `memo` or `useMemo`, but they’re often good to try first.
 
@@ -77,7 +77,7 @@ _([Try it here](https://codesandbox.io/s/frosty-glade-m33km?file=/src/App.js:23-
 
 > I could [put `memo()` on it](https://codesandbox.io/s/amazing-shtern-61tu4?file=/src/App.js) and call it a day, but there are many existing articles about it so I won’t spend time on it. I want to show two different solutions.
 
-이때 저는 memo()를 넣어 해당 컴포넌트를 날마다 호출하려 했지만, memo()와 관련하여 존재하는 문서들이 너무 많아 더 이상 시간을 소비하고 싶지 않습니다. 저는 여기서 두 개의 각기 다른 해결 방법을 보여주려 합니다.
+이때 저는 memo()를 넣어 마무리하려 했지만, memo()와 관련하여 존재하는 문서들이 너무 많아 더 이상 시간을 소비하고 싶지 않았습니다. 저는 여기서 두 개의 각기 다른 해결 방법을 보여주려 합니다.
 
 <br/><br/>
 
@@ -160,7 +160,7 @@ _([Try it here](https://codesandbox.io/s/bold-dust-0jbg7?file=/src/App.js:58-313
 
 > Now it seems like we can’t just “extract” the parts that don’t use `color` into another component, since that would include the parent `<div>`, which would then include `<ExpensiveTree />`. Can’t avoid `memo` this time, right?
 
-부모 div가 ExpensiveTree를 포함하기 때문에, 색상을 사용하지 않는 다른 컴포넌트를 추출할 수 없는 것처럼 보입니다. 이럴 때는 memo를 피할 수 없겠죠?
+부모 div가 ExpensiveTree를 포함하고 부모 div는 색상 상태값을 참조하기 때문에, 색상을 사용하지 않는 다른 컴포넌트를 추출할 수 없는 것처럼 보입니다. 이럴 때는 memo를 피할 수 없겠죠?
 
 > Or can we?
 
