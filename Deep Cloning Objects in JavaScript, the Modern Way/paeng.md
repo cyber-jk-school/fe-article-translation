@@ -64,7 +64,7 @@ const simpleEvent = {
 const shallowCopy = { ...calendarEvent };
 ```
 
-또는 이중 하나라도 원하는 경우
+아래와 같은 방법들으로도 사용할 수 있습니다.
 
 ```js
 const shallowCopy = Object.assign({}, simpleEvent);
@@ -191,7 +191,7 @@ const LodashClonedEvent = cloneDeep(calendarEvent);
 
 ![image3](https://user-images.githubusercontent.com/53526987/219850090-18da1e14-329f-46f2-bbbd-614fa2bcb929.png)
 
-이것이 누가에게도 세상의 종말은 아니지만, 브라우저에 이미 `structuredClone`이 내장되어 있는 경우에는 필요하지 않습니다.
+이것이 누구에게도 세상의 종말은 아니지만, 브라우저에 이미 `structuredClone`이 내장되어 있는 경우에는 필요하지 않습니다.
 
 ## `structuredClone`에서 복제할 수 없는 것
 
@@ -267,7 +267,7 @@ Error Types
 
 여기에 가장 중요한 부분이 있습니다. `structuredClone`은 모든 주요 브라우저들과 심지어 Node.js및 Deno에서도 지원이 됩니다.
 
-지원이 더 제한적인 웹 작업자들에 대한 주의 사항에 유의해야 됩니다.
+지원이 더 제한적인 [Web Workers](https://developer.mozilla.org/ko/docs/Web/API/Web_Workers_API)에 대한 주의 사항에 유의해야 됩니다.
 
 ![image4](https://user-images.githubusercontent.com/53526987/219856782-01851be7-5e15-4986-8994-7f75df1e6253.png)
 
