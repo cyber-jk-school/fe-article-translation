@@ -4,7 +4,7 @@
 
 이제 자바스크립트에서 객체의 깊은 복사를 수행하는 자체적인 방법이 있다는 걸 알고 있나요?
 
-맞아요! `structuredClone` 함수가 자바스크립트 런타임에 추가되었습니다.
+맞아요! `structuredClone` 함수가 자바스크립트 런타임에 내장되어 있습니다.
 
 ```javascript
 const calendarEvent = {
@@ -34,7 +34,7 @@ cocalendarEvent.attendees === copied.attendees; // false
 - 다양한 자바스크립트 타입의 복제, `Date`, `Set`, `Map`, `Error`, `RegExp`, `ArrayBuffer`, `Blob`, `File`, `ImageDate`, 그리고 이 외에도 [더 많은 타입들](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types)
 - [transferable objects](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects) 전달
 
-그렇기 때문에 예를 들어, 아래와 같은 미친 짓도 예측한 대로 동작할 것입니다.
+그렇기 때문에 예를 들어, 아래와 같은 무모한 짓도 예측한 대로 동작할 것입니다.
 
 ```javascript
 const kitchenSink = {
@@ -161,7 +161,7 @@ const veryProblematicCopy = JSON.parse(JSON.stringify(kitchenSink));
 
 ## 왜 `_.cloneDeep`을 사용하지 않나요?
 
-date의 문제에서 Lodash의 `cloneDeep` 함수는 매우 흔한 해결법입니다.
+오늘날 Lodash의 `cloneDeep` 함수는 매우 흔한 해결법입니다.
 
 실제로 이것은 예측한 대로 동작합니다.
 
@@ -180,7 +180,7 @@ const clonedEvent = structuredClone(calendarEvent);
 
 그러나 이 방법은 주의할 점이 한 가지 있습니다. 제 IDE의 [Import Cost](https://marketplace.visualstudio.com/items?itemName=wix.vscode-import-cost)(import한 모든 것의 용량을 출력하는) 확장 프로그램에 따르면, 이 하나의 함수는 17.4kb로 제공됩니다. (gzip 압축 시 5.3k)
 ![lodash](https://cdn.builder.io/api/v1/image/assets%2FYJIGb4i01jvw0SRdL5Bt%2Faa5ab14fd21741bf8e327dd6e6fb68b1?format=webp&width=2000)
-그리고 위의 방법은 당신이 오직 함수만 import 한 경우를 가정합니다. 만약 당신이 더 흔한 방법, 트리 쉐이킹이 당신이 바라는 대로 동작하지 않는다는 사실을 깨닫지 못하고, 하나의 함수를 위해 최대 25kb까지 실수로 import 할 수 있습니다.
+그리고 위의 방법은 당신이 오직 함수만 import 한 경우를 가정합니다. 만약 트리 쉐이킹이 당신이 바라는 대로 동작하지 않는다는 사실을 깨닫지 못하고, 더 일반적인 방법으로 import 한다면 하나의 함수를 위해 최대 25kb까지 실수로 import 할 수 있습니다.
 ![treeshaking](https://cdn.builder.io/api/v1/image/assets%2FYJIGb4i01jvw0SRdL5Bt%2F5dbbee190753414bb31b720059a501db?format=webp&width=2000)
 
 이것은 누구에게도 세상의 끝이 되지 않겠지만, 브라우저에 이미 `structuredClone`이 내장되어 있다면 필요하지 않습니다.
@@ -221,7 +221,7 @@ structuredClone({
 
 ### 객체 프로토타입
 
-프로토타입 체인은 walked(?) 되거나 중복되지 않습니다. 그렇기 때문에 `MyClass`의 인스턴스를 복제할 때, 복제된 객체는 더 이상 해당 클래스의 인스턴스인지 알지 못할 것입니다. (그러나 클래스의 모든 유효한 속성은 복제될 것입니다.)
+프로토타입 체인은 이동되거나 중복되지 않습니다. 그렇기 때문에 `MyClass`의 인스턴스를 복제할 때, 복제된 객체는 더 이상 해당 클래스의 인스턴스인지 알지 못할 것입니다. (그러나 클래스의 모든 유효한 속성은 복제될 것입니다.)
 
 ```javascript
 class MyClass {
