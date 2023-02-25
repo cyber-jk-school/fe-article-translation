@@ -138,3 +138,92 @@ routes.HOME.children.LOGIN.path; // ❌ routes.HOME has no property `children`
 정확히 우리가 원하던 거였습니다.
 
 ## `as const`와의 결합
+
+당신이 마주할 수 있는 마지막 상황은 `satisfies`의 평범한 사용으로, 구성 객체가 이상적인 것보다 조금 더 느슨하게 캡처되는 것입니다.
+
+예를 들어, 다음과 같은 코드를 사용합니다.:
+
+```ts
+const routes = {
+  HOME: { path: '/' },
+} satisfies Routes;
+```
+
+`path` property type을 확인하면 `string` type을 얻을 수 있습니다.
+
+```ts
+routes.HOME.path; // Type: string
+```
+
+그러나, 구성과 관련하여 [const assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) (aka `as const`)이 빛을 발하는 순간입니다. 만약 `as const`를 사용한다면, 적절한 문자열 리터럴 `/`까지 더 정확한 types을 얻을 수 있습니다.
+
+```ts
+const routes = {
+  HOME: { path: '/' },
+} as const;
+
+routes.HOME.path; // Type: '/'
+```
+
+이것은 "ok, 멋진 트릭인데 왜 내가 신경써야 하는가"처럼 보일 수 있지만, 정확한 경로까지 type-safe하게 사용할 수 있는 방법인지 고려해봐야 합니다.:
+
+```ts
+function navigate(path: '/' | '/auth') { ... }
+```
+
+각 `path`가 `string`으로만 알려지게 하는 `satisfies`를 사용하면, type 에러를 발생합니다.:
+
+```ts
+const routes = {
+  HOME: { path: '/' },
+} satisfies Routes;
+
+navigate(routes.HOME.path);
+// ❌ Argument of type 'string' is not assignable to parameter of type '"/" | "/auth"'
+```
+
+앍! `HOME.path`는 유효 문자열(`/`)이지만, TypeScript는 아닙니다.
+
+음, 여기서 `satisfies`와 `as const`를 결합하여 최고의 결과를 얻을 수 있습니다.
+
+```ts
+  const routes = {
+    HOME: { path: '/' }
+- } satisfies Routes
++ } as const satisfies Routes
+```
+
+이젠 우리가 사용한 정확한 리터럴 values까지 type 검사를 통해 훌륭한 해결책을 가지게 되었습니다. 아름답군.
+
+```ts
+const routes = {
+  HOME: { path: '/' },
+} as const satisfies Routes;
+
+navigate(routes.HOME.path); // ✅ - as desired
+navigate('/invalid-path'); // ❌ - as desired
+```
+
+마지막으로, 왜 `satisfies` 대신에 `as const`를 사용하지 않는가?를 물을 지도 모릅니다.
+
+음, `as const`와 같이 객체 자체에서 any type 검사를 하지 않습니다. 즉, IDE에서 자동 완성 기능이 없거나 작성 시 오타 및 기타 문제에 대한 경고가 표시되지 않습니다.
+
+이것이 왜 조합이 효과적인지에 대한 이유입니다.
+
+## 가까운 libraries 와 frameworks로 이동
+
+새로운 연산자에서 얻을 수 있는 가장 큰 이점은 인기있는 libraries와 frameworks에서 지원이 된다는 것입니다.
+
+예를 들어, 다음과 같이 작성한 경우 NextJS를 사용합니다.
+
+```ts
+export const getStaticProps: GetStaticProps = () => {
+  return {
+    hello: 'world',
+  };
+};
+
+export default function Page(
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) {}
+```
