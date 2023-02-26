@@ -1,5 +1,7 @@
 # TypeScript에서 더 나은 구성을 위한 `satisfies` 연산자
 
+원문: https://www.builder.io/blog/satisfies-operator
+
 ![1](https://user-images.githubusercontent.com/53526987/220627936-836bb750-eb2a-41ad-b2aa-e3a494cabe5a.png)
 
 TypeScript에서 type-safe 구성을 하는 새롭고 더 나은 방법이 있습니다.
