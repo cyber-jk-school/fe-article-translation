@@ -225,5 +225,38 @@ export const getStaticProps: GetStaticProps = () => {
 
 export default function Page(
   props: InferGetStaticPropsType<typeof getStaticProps>
-) {}
+) {
+  // 🚩 Typo not caught, because `props` is of type `{ [key: string]: any }`
+  return <div>{props.hello}</div>;
+}
 ```
+
+이런 경우 `props`는 `{ [key: string]: any }` 입니다. 휴, 별로 도움이 되지 않습니다.
+
+그러나 `satisfies`로 다음과 같이 작성할 수 있습니다.:
+
+```ts
+export const getStaticProps = () => {
+  return {
+    hello: 'world'
+  }
+} satisfies GetStaticProps
+
+export default function Page(
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) {
+  // 😍 `props` is of type `{ hello: string }`, so our IDE makes sure our
+  // code is correct
+  return <div>{props.hello}</div>
+}
+```
+
+이를 통해 이전과 동일한 type 검사와 완성을 얻을 수 있지만, 현재 적절한 props type은 `{ hello: string }` 입니다.
+
+## 결론
+
+TypeScript 4.9에서는 TypeScript에서 구성-관련 작업에 매우 편리한 `satisfies` 키워드를 새로 도입하였습니다.
+
+표준 type 선언을 비교할 때, 바람직한 type 안전과 내부-IDE에서 잘 동작하는 것을 위해 type 검사와 정확한 세부 정보의 이해 사이에서 균형을 이루어야 합니다.
+
+이 routes 예제를 제안한 [u/sauland](https://www.reddit.com/r/webdev/comments/zrt1rb/comment/j15fffv/?utm_source=share&utm_medium=web2x&context=3) 와 NextJS 예제를 제공한 [Matt Pocock](https://www.youtube.com/watch?v=Danki1DyiuI) 와 [Lee Robinson](https://twitter.com/leeerob/status/1563540593003106306?lang=en)에 감사의 인사를 전합니다.
