@@ -127,7 +127,7 @@ const routes = {
 } satisfies Routes;
 ```
 
-그리고 이제 우리는 우리가 사용했던 일반적인 type을 기반으로 한 것과 반대로, IDE 자동완성과 type 체킹을 트리 아래까지 정확하게 파악하는 방법을 얻습니다.:
+그리고 이제 우리는 우리가 사용했던 일반적인 type을 기반으로 한 것과 반대로, 정확히 우리가 구성한 대 IDE 의 자동완성과 모든 객체 트리에 대한 type을 체크할 수 있습니다.
 
 ![3](https://user-images.githubusercontent.com/53526987/220932259-5f03b1a0-1b74-4689-b439-d8004465822f.gif)
 
@@ -141,7 +141,7 @@ routes.HOME.children.LOGIN.path; // ❌ routes.HOME has no property `children`
 
 ## `as const`와의 결합
 
-당신이 마주할 수 있는 마지막 상황은 `satisfies`의 평범한 사용으로, 구성 객체가 이상적인 것보다 조금 더 느슨하게 캡처되는 것입니다.
+당신이 마주할 수 있는 마지막 상황은 평범하게 `satisfies`의 사용으로, 구성 객체가 이상적인 것보다 조금 더 느슨하게 수집되는 것입니다.
 
 예를 들어, 다음과 같은 코드를 사용합니다.:
 
@@ -167,7 +167,7 @@ const routes = {
 routes.HOME.path; // Type: '/'
 ```
 
-이것은 "ok, 멋진 트릭인데 왜 내가 신경써야 하는가"처럼 보일 수 있지만, 정확한 경로까지 type-safe하게 사용할 수 있는 방법인지 고려해봐야 합니다.:
+이것은 "ok, 교묘한 트릭인데 왜 내가 신경써야 하는가"처럼 보일 수 있지만, 정확한 경로까지 type-safe하게 사용할 수 있는 방법인지 고려해봐야 합니다.:
 
 ```ts
 function navigate(path: '/' | '/auth') { ... }
