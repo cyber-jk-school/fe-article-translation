@@ -45,16 +45,16 @@ Hooks를 시작할 때 나 역시 이 질문들에 대해서 혼란스러웠습�
 
 🤔 **Question: `useEffect` 안에서 데이터 패칭(Data Fetching)은 어떻게 합니까? 배열([])은 무엇입니까?**
 
-[이 article](https://www.robinwieruch.de/react-hooks-fetch-data/)은 `useEffect`로 데이터 패칭하는 아주 좋은 기본서입니다. 글을 끝까지 꼭 읽어보세요! 지금 글 같이 길지 않습니다. `[]`는 이팩트는 어떠한 값도 리액트 데이터 흐름에 참여하지 않아서, 한 번 적용해도 안전합니다. 빈 배열에 실제 값이 사용되는 것이 버그를 일으키는 주된 원인 중 하나입니다. 의존성 체크를 생략하는 것보다는 의존성을 필요로 하는 상황을 제거하는 몇가지 전략(주로 `useReducer`와 `useCallback`)을 익혀야 할 필요가 있습니다.
+[이 article](https://www.robinwieruch.de/react-hooks-fetch-data/)은 `useEffect`로 데이터 패칭하는 아주 좋은 기본서입니다. 글을 끝까지 꼭 읽어보세요! 지금 글 같이 길지 않습니다. `[]`는 이펙트에 리액트 데이터 흐름에 참여하는 어떠한 값도 사용하지 않겠다는 것을 의미하여, 한 번 적용해도 안전합니다. 빈 배열에 실제 값이 사용되는 것이 버그를 일으키는 주된 원인 중 하나입니다. 의존성 체크를 생략하는 것보다는 의존성을 필요로 하는 상황을 제거하는 몇가지 전략(주로 `useReducer`와 `useCallback`)을 익혀야 할 필요가 있습니다.
 
 🤔 **Question: 이펙트를 일으키는 의존성 배열에 함수를 명시해도 됩니까?**
-추천하는 방법은 props또는 state를 필요하지 않는 함수를 컴포넌트 외부에서 호이스팅하고, 이팩트 안에서 사용되는 것은 이팩트 내부에서 선언해야 합니다. 이팩트가 여전히 랜더 범위(props로 내려오는 함수 포함) 안의 함수를 사용하고 있다면, 그것들을 정의하고 반복되는 과정에서 `useCallback`로 감싸면 됩니다. 왜 중요한가요? 함수들은 props와 state에서 값들을 "볼" 수 있습니다. - 그래서 데이터 흐름과 연관이 있습니다. FAQ에 [자세한 답변](https://legacy.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)이 있습니다.
+추천하는 방법은 props또는 state를 필요하지 않는 함수를 컴포넌트 외부에서 호이스팅하고, 이펙트 안에서 사용되는 것은 이펙트 내부에서 선언해야 합니다. 이펙트가 여전히 랜더 범위(props로 내려오는 함수 포함) 안의 함수를 사용하고 있다면, 그것들을 정의하고 반복되는 과정에서 `useCallback`로 감싸면 됩니다. 왜 중요한가요? 함수들은 props와 state에서 값들을 "볼" 수 있습니다. - 그래서 데이터 흐름과 연관이 있습니다. FAQ에 [자세한 답변](https://legacy.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)이 있습니다.
 
 🤔 **Question: 왜 가끔 데이터 패칭이 무한 루프에 빠집니까?**
-두번째 인자로 의존성 배열에 전달하지 않고 데이터 패칭을 할때 생길 수 있는 문제입니다. 이러한 것이 없다면 모든 랜더 과정 후에 실행되고 - state를 설정하면 이팩트가 다시 트리거 됩니다. 의존성 배열에 계속 바뀌는 값을 넣어도 무한 루프가 발생할 수 있습니다. 하나씩 값을 지워가며 확인할 수 있습니다. 그러나 사용하고 있는 의존 값을 지우는 것(또는 맹목적으로 `[]` 지정)은 잘못된 해결방법입니다. 그 대신에 근원적인 문제를 찾아서 해결해야 합니다. 함수가 문제를 일으킨다고 예를 들면, 이팩트 내부에 함수를 넣거나, 함수들을 꺼내어 호이스팅하거나, `useCallback`으로 감싸면 해결될 것입니다. 객체가 재생성되는 것을 막기 위해, `useMemo`를 비슷한 용도로 사용할 수 있습니다.
+두번째 인자로 의존성 배열에 값을 전달하지 않고 데이터 패칭을 할때 생길 수 있는 문제입니다. 이러한 것이 없다면 모든 랜더 과정 후에 실행되고 - state를 설정하면 이펙트가 다시 트리거 됩니다. 의존성 배열에 계속 바뀌는 값을 넣어도 무한 루프가 발생할 수 있습니다. 하나씩 값을 지워가며 확인할 수 있습니다. 그러나 사용하고 있는 의존 값을 지우는 것(또는 맹목적으로 `[]` 지정)은 잘못된 해결방법입니다. 그 대신에 근원적인 문제를 찾아서 해결해야 합니다. 함수가 문제를 일으킨다고 예를 들면, 이펙트 내부에 함수를 넣거나, 함수들을 꺼내어 호이스팅하거나, `useCallback`으로 감싸면 해결될 것입니다. 객체가 재생성되는 것을 막기 위해, `useMemo`를 비슷한 용도로 사용할 수 있습니다.
 
 🤔 **Question: 왜 가끔 이펙트안에서 예전 state와 prop을 참조하는 것입니까?**
-애팩트는 이팩트가 정의된 곳에서 랜더링이 일어날 때마다 props와 state를 "봅"니다. 이것은 [버그를 막을 수 있지만](https://overreacted.io/ko/how-are-function-components-different-from-classes/) 때때로 짜증날 수 있습니다. 이럴 경우, 명시적인 값을 가변성 ref에 넣어 관리할 수 있습니다.(링크 연결된 article 설명들은 끝 부분에 있습니다.) 기대한 것과 달리 예전 랜더링에서 props또는 state가 보인다면, 의존성 배열에 값을 넣는 것을 잊어버렸을 것입니다. [lint 규칙](https://github.com/facebook/react/issues/14920)
+이펙트는 이펙트가 정의된 곳에서 랜더링이 일어날 때마다 props와 state를 "봅"니다. 이것은 [버그를 막을 수 있지만](https://overreacted.io/ko/how-are-function-components-different-from-classes/) 때때로 짜증날 수 있습니다. 이럴 경우, 명시적인 값을 가변성 ref에 넣어 관리할 수 있습니다.(링크 연결된 article 설명들은 끝 부분에 있습니다.) 기대한 것과 달리 예전 랜더링에서 props또는 state가 보인다면, 의존성 배열에 값을 넣는 것을 잊어버렸을 것입니다. [lint 규칙](https://github.com/facebook/react/issues/14920)
 을 사용하여 그것들을 파악할 수 있게 연습해야합니다. 몇일 안에 자연스러워 질 것입니다. 또한 FAQ에서 이 [답변](https://legacy.reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function)을 읽어 보시면 됩니다.
 
 ---
