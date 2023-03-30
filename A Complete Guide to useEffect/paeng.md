@@ -62,3 +62,61 @@ Hooks를 시작할 때 나 역시 이 질문들에 대해서 혼란스러웠습�
 TLDR이 도움이 되길 희망합니다.! 이젠 시작합니다.
 
 ---
+
+## 각 렌더는 Props와 State를 가지고 있다.
+
+이펙트에 대해서 말하기 전에, 렌더링에 대해서 이야기 해봅시다.
+
+여기 카운터가 있습니다. 하이라이트된 부분(\*)을 자세히 봅시다:
+
+```js
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>*
+      <button onClick={() => setCount(count+1)}>
+    </div>
+  );
+}
+```
+
+이것은 무슨 의미 입니까? `count`가 state의 변화를 "보고" 자동으로 업데이트 하는 겁니까? 처음 리액트를 배울때 직관적으로 보기 좋지만 [정확한 멘탈 모델](https://overreacted.io/react-as-a-ui-runtime/)은 아닙니다.
+
+이 예제에서 `count`는 단지 숫자입니다. "데이터 바인딩", "watcher", "proxy", 그외와 같은 마법적인 것이 아닙니다. 이것은 그냥 숫자입니다.
+
+```js
+const count = 42;
+//...
+<p>You clicked {count} times</p>;
+//...
+```
+
+컴포넌트를 처음 렌더링 할때, `count`가 `useState()`로 부터 가져온 값은 `0`입니다. `setCount(1)`을 호출하면, 리엑트는 컴포넌트를 다시 호출합니다. 이 때, `count`는 `1`이 되는 식이 됩니다.
+
+```js
+// During first render
+function Counter() {
+  const count = 0;* // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+
+// After a click, our function is called again
+function Counter() {
+  const count = 1;* // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+
+// After another click, our function is called again
+function Counter() {
+  const count = 2;* // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+```
