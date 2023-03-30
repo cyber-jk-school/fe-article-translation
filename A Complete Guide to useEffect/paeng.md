@@ -120,3 +120,71 @@ function Counter() {
   // ...
 }
 ```
+
+**state를 업데이트 할때, 리액트는 컴포넌트를 호출합니다. 각 렌더의 결과는 함수 내부에서 상수인 `counter` state 값을 "인식" 합니다.**
+
+그래서 이 문장은 어떠한 데이터 바인딩을 실행하지 않습니다.
+
+```js
+<p>You clicked {count} times</p>
+```
+
+**이것은 렌더 결과에 숫자 값을 내장한 것입니다.** 이 숫자는 리액트에 의해 제공됩니다. `setCount`를 호출 할때, 리액트는 다른 `count` 값과 함께 컴포넌트를 다시 호출합니다. 그리고나서 리액트는 최신 렌더 결과에 맞도록 업데이트 합니다.
+
+요점은 어느 렌더가 있더라도 렌더 내부의 상수 `count`는 변하지 않는 다는 것입니다. 컴포넌트를 다시 호출하고 - 각 렌더사이에서 분리된 각각의 `count` 값들을 "보는" 것입니다.
+
+(이 과정을 더 깊게 들어가려면, 나의 포스트 [React as a UI Runtime](https://overreacted.io/react-as-a-ui-runtime/)를 확인하시면 됩니다.)
+
+## 각 렌더는 고유의 이벤트 헨들러들을 가집니다.
+
+여태까지 그런데로 잘되었습니다. 이벤트 헨들러들은 무엇입니까?
+
+예시를 보겠습니다. 3초후에 `count`를 가진 alert를 보여주는 예시입니다:
+
+```js
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleAlertClick() {*
+    setTimeout(() => {*
+      alert('You clicked on: ' + count);*
+    }, 3000);*
+  }*
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+      <button onClick={handleAlertClick}>Show alert</button>*
+    </div>
+  );
+}
+```
+
+이 과정의 순서를 말해보겠습니다.:
+
+- 카운터를 3으로 증가시킵니다.
+- "alert 보여주기"를 누릅니다.
+- 타임아웃이 되기 전에 5로 증가시킵니다.
+
+![counter](https://user-images.githubusercontent.com/53526987/228766494-8a27e743-47df-4c64-901c-b94a4cb825b6.gif)
+
+alert에 무엇이 보이기를 기대하는 겁니까? alert 발생시 counter의 state인 5가 보입니까? 또는 눌렀던 때의 state인 3이 보입니까?
+
+---
+
+앞으로 스포일러입니다.
+
+---
+
+[직접 시도해 보시면 됩니다!](https://codesandbox.io/s/w2wxl3yo0l)
+
+이 동작이 이해가 되지 않는다면, 채팅앱에서 state에 현재 수신자 ID를 가지고 있는 상태에서 보내기 버튼을 누르는 것 같은 현실적은 예제로 상상해보시면 됩니다. 답이 3이 나왔는지 깊게 알려주는 [article](https://overreacted.io/how-are-function-components-different-from-classes/)입니다.
+
+alert는 버튼을 눌렀을 때 state를 "캡쳐"합니다.
+
+(다른 동작을 구현하는 방법들도 있지만 지금은 기본 사항에 초점을 맞추겠습니다. 멘탈 모델을 구성할 때, 중요한 점은 선택형 탈출구와 "최소 저항 경로"를 구분합니다.)
+
+---
+
+하지만 어떻게 작동합니까?
