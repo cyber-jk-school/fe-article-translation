@@ -45,7 +45,7 @@ Hooks를 시작할 때 나 역시 이 질문들에 대해서 혼란스러웠습�
 
 🤔 **Question: `useEffect` 안에서 데이터 패칭(Data Fetching)은 어떻게 합니까? 배열([])은 무엇입니까?**
 
-[이 article](https://www.robinwieruch.de/react-hooks-fetch-data/)은 `useEffect`로 데이터 패칭하는 아주 좋은 기본서입니다. 글을 끝까지 꼭 읽어보세요! 지금 글 같이 길지 않습니다. `[]`는 이펙트에 리액트 데이터 흐름에 참여하는 어떠한 값도 사용하지 않겠다는 것을 의미하여, 한 번 적용해도 안전합니다. 빈 배열에 실제 값이 사용되는 것이 버그를 일으키는 주된 원인 중 하나입니다. 의존성 체크를 생략하는 것보다는 의존성을 필요로 하는 상황을 제거하는 몇가지 전략(주로 `useReducer`와 `useCallback`)을 익혀야 할 필요가 있습니다.
+[이 article](https://www.robinwieruch.de/react-hooks-fetch-data/)은 `useEffect`로 데이터 패칭하는 아주 좋은 기본서입니다. 글을 끝까지 꼭 읽어보세요! 지금 글 같이 길지 않습니다. `[]`는 이펙트에 리엑트 데이터 흐름에 참여하는 어떠한 값도 사용하지 않겠다는 것을 의미하여, 한 번 적용해도 안전합니다. 빈 배열에 실제 값이 사용되는 것이 버그를 일으키는 주된 원인 중 하나입니다. 의존성 체크를 생략하는 것보다는 의존성을 필요로 하는 상황을 제거하는 몇가지 전략(주로 `useReducer`와 `useCallback`)을 익혀야 할 필요가 있습니다.
 
 🤔 **Question: 이펙트를 일으키는 의존성 배열에 함수를 명시해도 됩니까?**
 추천하는 방법은 props또는 state를 필요하지 않는 함수를 컴포넌트 외부에서 호이스팅하고, 이펙트 안에서 사용되는 것은 이펙트 내부에서 선언해야 합니다. 이펙트가 여전히 랜더 범위(props로 내려오는 함수 포함) 안의 함수를 사용하고 있다면, 그것들을 정의하고 반복되는 과정에서 `useCallback`로 감싸면 됩니다. 왜 중요한가요? 함수들은 props와 state에서 값들을 "볼" 수 있습니다. - 그래서 데이터 흐름과 연관이 있습니다. FAQ에 [자세한 답변](https://legacy.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)이 있습니다.
@@ -82,7 +82,7 @@ function Counter() {
 }
 ```
 
-이것은 무슨 의미 입니까? `count`가 state의 변화를 "보고" 자동으로 업데이트 하는 겁니까? 처음 리액트를 배울때 직관적으로 보기 좋지만 [정확한 멘탈 모델](https://overreacted.io/react-as-a-ui-runtime/)은 아닙니다.
+이것은 무슨 의미 입니까? `count`가 state의 변화를 "보고" 자동으로 업데이트 하는 겁니까? 처음 리엑트를 배울때 직관적으로 보기 좋지만 [정확한 멘탈 모델](https://overreacted.io/react-as-a-ui-runtime/)은 아닙니다.
 
 이 예제에서 `count`는 단지 숫자입니다. "데이터 바인딩", "watcher", "proxy", 그외와 같은 마법적인 것이 아닙니다. 이것은 그냥 숫자입니다.
 
@@ -121,7 +121,7 @@ function Counter() {
 }
 ```
 
-**state를 업데이트 할때, 리액트는 컴포넌트를 호출합니다. 각 렌더의 결과는 함수 내부에서 상수인 `counter` state 값을 "인식" 합니다.**
+**state를 업데이트 할때, 리엑트는 컴포넌트를 호출합니다. 각 렌더의 결과는 함수 내부에서 상수인 `counter` state 값을 "인식" 합니다.**
 
 그래서 이 문장은 어떠한 데이터 바인딩을 실행하지 않습니다.
 
@@ -129,7 +129,7 @@ function Counter() {
 <p>You clicked {count} times</p>
 ```
 
-**이것은 렌더 결과에 숫자 값을 내장한 것입니다.** 이 숫자는 리액트에 의해 제공됩니다. `setCount`를 호출 할때, 리액트는 다른 `count` 값과 함께 컴포넌트를 다시 호출합니다. 그리고나서 리액트는 최신 렌더 결과에 맞도록 업데이트 합니다.
+**이것은 렌더 결과에 숫자 값을 내장한 것입니다.** 이 숫자는 리엑트에 의해 제공됩니다. `setCount`를 호출 할때, 리엑트는 다른 `count` 값과 함께 컴포넌트를 다시 호출합니다. 그리고나서 리엑트는 최신 렌더 결과에 맞도록 업데이트 합니다.
 
 요점은 어느 렌더가 있더라도 렌더 내부의 상수 `count`는 변하지 않는 다는 것입니다. 컴포넌트를 다시 호출하고 - 각 렌더사이에서 분리된 각각의 `count` 값들을 "보는" 것입니다.
 
@@ -188,3 +188,116 @@ alert는 버튼을 눌렀을 때 state를 "캡쳐"합니다.
 ---
 
 하지만 어떻게 작동합니까?
+
+우리는 매번 별개의 함수를 호출 할 때마다 `count` 값이 상수라고 이야기를 하였습니다. 이것을 강조하고 싶습니다. - **함수는 여러번 호출되지만(렌더링마다 한번씩), 이 때마다 내부 `count` 값은 상수와 특정 값(렌더링시에 대한 state)으로 존재합니다.**
+
+리엑트만 특별하게 동작하는 일은 아닙니다. - 보통 함수에서도 비슷하게 동작합니다:
+
+```js
+function sayHi(person) {
+  const name = person.name;*
+  setTimeout(() => {
+    alert('Hello, ' + name);
+  }, 3000);
+}
+
+let someone = { name: 'Dan' };
+sayHi(someone);
+
+someone = { name: 'Yuzhi' };
+sayHi(someone);
+
+someone = { name: 'Dominic' };
+sayHi(someone);
+```
+
+이 [예시에서](https://codesandbox.io/s/mm6ww11lk8), 외부 `someone` 변수는 여러번 재할당 됩니다. (리엑트 어딘가에서와 마찬가지로, 현재 컴포넌트의 state가 변할 수 있습니다.) **그러나, 내부 `sayHi`는, 특정 호출마다 `person`과 연관되어있는 지역 상수 `name`이 있습니다.** 이 상수는 지역상수이기 때문에, 각 호출들로 부터 분리해야 합니다! 시간이 완료될 때, 각 alert는 고유의 `name`을 "기억"하는 결과가 나옵니다.
+
+이 설명을 통해 클릭 시에 이벤트 handler가 어떻게 `count`값을 잡고 있는지 알 수 있습니다. 만약 대체 원리로 같이 적용해보면, 매 렌더마다 고유의 `count`를 "보는" 것 입니다:
+
+```js
+// During first render
+function Counter() {
+  const count = 0;* // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+
+// After a click, our function is called again
+function Counter() {
+  const count = 1;* // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+
+// After another click, our function is called again
+function Counter() {
+  const count = 2;* // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+```
+
+효과적으로, 각 렌더는 고유 "버전"의 `handleAlertClick`을 리턴합니다. 각 버전은 고유의 `count`를 "기억"합니다.
+
+```js
+// During first render
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 0);*
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} />;* // The one with 0 inside
+  // ...
+}
+
+// After a click, our function is called again
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 1);*
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} />;* // The one with 1 inside
+  // ...
+}
+
+// After another click, our function is called again
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 2);*
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} />;* // The one with 2 inside
+  // ...
+}
+```
+
+왜 이 [데모](https://codesandbox.io/s/w2wxl3yo0l)에서 이벤트 handler가 특정 렌더에 "속해"있으며, 클릭할 때, 렌더 시점에서 `counter` state를 유지한채 사용합니다.
+
+**어떠한 렌더내부에서도, props와 state는 같은 값을 유지합니다.** 그러나 props와 state가 렌더사이에서 분리가 된다면, 이 것들을 사용하는 어떤 값들도 분리되어 있는 것입니다.(이벤트 handler 포함) 이것들은 특정 렌더에 "속해"있습니다. 비동기 함수 내부의 이벤트 handler라 할지라도 같은 `count`값을 "보게"될 것 입니다.
+
+참고 노트: 위의 `handleAlertClick` 함수에 구체적인 `count` 값을 넣었습니다. `count`가 특정 렌더에서 변할 가능성이 없어 이런 변환은 안전합니다. `const`와 숫자로 선언되어 있기 때문입니다. 객체와 같은 다른 값들 또한 같은 방법이 안전할 것이라고 생각 할 수 있지만, 불변 state가 있어야 하는 전제가 필요합니다. 이전 렌더에 속해있는 state가 손상되지 않기 때문에 객체 변환 대신 새로운 객체로 `setSomething(newObj)`를 호출하는 것이 좋습니다.
