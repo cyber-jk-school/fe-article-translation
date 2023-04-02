@@ -32,7 +32,7 @@ const routes: Routes = {
 };
 ```
 
-지금까진 모든 게 괜찮아 보입니다. 우리는 IDE에서 적절한 타입 체크와 완성(?) 기능을 얻습니다.
+지금까진 모든 게 괜찮아 보입니다. 우리는 IDE에서 적절한 타입 체크와 완성 기능을 얻습니다.
 그러나, 우리가 routes 객체를 사용할 때, 컴파일러(그리고 그 결과 우리의 IDE도)는 실제로 구성된 routes를 알지 못합니다.
 예를 들어, 아래는 컴파일은 제대로 되지만, 런타임에러 에러를 반환합니다.
 
@@ -57,7 +57,7 @@ const routes = {
 
 이것은 타입스크립트에서 일반적인 관행이지만, 사실 상당히 위험합니다.
 
-위에서와 같은 문제가 있을 뿐만 아니라, 존재하지 않는 키값을 사용할 수 있고 TypeScript will look the other way(여기를 어떻게 번역해야 할 지 모르겠어요)
+위에서와 같은 문제가 있을 뿐만 아니라, 존재하지 않는 키값을 사용할 수 있고 타입스크립트에서는 다른 방식으로 보여질 수 있습니다.
 
 ```ts
 type Route = { path: string; children?: Routes };
@@ -134,7 +134,7 @@ routes.HOME.children.LOGIN.path; // ❌ routes.HOME에 `children` 속성이 없�
 
 ## `as const`와 결합
 
-당신이 마주할 수 있는 마지막 상황은, 평범하게 `satisfies`를 사용했을 때, 우리가 구성한 객체는 생각했던 것보다 더 느슨해질 수 있습니다. (is captured를 뭐라고 번역해야 할까요?)  
+당신이 마주할 수 있는 마지막 상황은, 평범하게 `satisfies`를 사용했을 때, 우리가 구성한 객체는 생각했던 것보다 더 느슨해질 수 있습니다.
 예를 들어, 아래 코드에서
 
 ```ts
@@ -159,7 +159,7 @@ const routes = {
 routes.HOME.path; // Type: '/'
 ```
 
-"그래, 이건 교묘한 수법인데 내가 왜 신경 써야돼"와 같이 생각할 수 있습니다. 그리나 아래와 같이 매개변수로 받는 정확한 경로까지 type-safe한 메소드를 고려해봅시다.(여기 문장을 어떻게 번역해야할 지 애매함)
+"그래, 이건 교묘한 수법인데 내가 왜 신경 써야돼"와 같이 생각할 수 있습니다. 그러나 아래와 같이 매개변수로 받는 정확한 경로까지 type-safe한 메소드를 고려해봅시다.
 
 ```ts
 function navigate(path: '/' | '/auth') { ... }
@@ -202,7 +202,7 @@ navigate("/invalid-path"); // ❌ - as desired
 음, `as const`만 사용하면, 우리가 그것을 작성할 때에 객체의 타입 체크를 할 수 없습니다. 그것은 우리의 IDE가 자동완성을 할 수 없거나 오타나 작성하는 동안 발생하는 다른 이슈들을 알려주지 않는다는 의미입니다.  
 이것이 `satisfies`와 `as const`를 결합하는 것이 효율적인 이유입니다.
 
-## Coming to libraries and frameworks near you (coming to 를 뭐라고 번역해야 할까요?)
+## 당신이 사용하는 라이브러리와 프레임워크로 이동
 
 당신이 이 새로운 연산자로부터 얻을 수 있는 가장 큰 이점은 당신이 사용하는 유명한 라이브러리와 프레임워크에서 지원한다는 것입니다.  
 예를 들어 NextJS에서, 이전의 방식으로 작성하면
@@ -246,5 +246,5 @@ export default function Page(
 ## 결론
 
 타입스크립트 4.9는 새로운 `satisfies` 키워드를 소개했고, 이것은 대부분의 타입스크립트의 구성 관련 작업에서 매우 편리합니다.  
-표준 타입 정의와 비교해서, 이것은 타입 체크와 최적의 타입 안전성을 위한 명확한 세부 구성 정보를 이해하는 것 사이의 우아한 균형을 이룰 수 있습니다. (여기 문장이 제일 어려운 것 같아요)  
+표준 타입 정의와 비교해서, 이것은 타입 체크와 최적의 타입 안전성을 위한 명확한 세부 구성 정보를 이해하는 것 사이의 우아한 균형을 이룰 수 있습니다.
 routes 예제를 제안한 [u/sauland](https://www.reddit.com/r/webdev/comments/zrt1rb/comment/j15fffv/?utm_source=share&utm_medium=web2x&context=3)와 NextJS 에제를 제안한 [Matt pocock](https://www.youtube.com/watch?v=Danki1DyiuI)과 [Lee Robinson](https://twitter.com/leeerob/status/1563540593003106306?lang=en)에게 감사합니다
