@@ -275,3 +275,146 @@ weakRef.deref();
 ```
 
 ## Promise.any
+다른 몇 가지 함수와 비교해봅시다.
+### Promise.any
+하나의 입력이 resolve되면 resolve됩니다.
+```javascript
+Promise.any([
+  Promise.reject('reject 1'),
+  Promise.reject('reject 2'),
+  Promise.reject('reject 3'),
+  Promise.resolve('1'),
+  Promise.resolve('2'),
+]).then(
+  first => {
+    // As long as there is a resolve, it will be executed here
+    // prints 1
+    console.log(first);
+  },
+  error => {
+    // Only come here when all reject
+    console.log(error);
+  },
+);
+```
+### Promise.allSettled
+들어온 프로미스가 reject 또는 resolve 됐는 지와 상관 없이, then으로 갑니다. (? it is rolled up to then 을 뭐라고 해석해야 할까요...)
+```javascript
+Promise.allSettled([
+  Promise.resolve('1'),
+  Promise.resolve('2'),
+  Promise.reject('e1'),
+  Promise.resolve('3'),
+  Promise.resolve('4'),
+])
+  .then(res => {
+    console.log('then', res);
+  });
+``` 
+![allSettled](https://haeyum.notion.site/image/https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A700%2F1*ZvTQfUCXPJPuBxoAPPU0ng.png?id=f16a9208-341f-4cc4-9f0d-983243947a14&table=block&spaceId=c246955d-673f-42a3-b7a2-0b9a31a59058&width=2000&userId=&cache=v2)
+### Promise.all
+reject가 발생할 경우, reject 됩니다. 아래의 예제는 catch 문으로 갑니다.
+```javascript
+Promise.all([
+  Promise.resolve('1'),
+  Promise.resolve('2'),
+  Promise.reject('e1'),
+  Promise.resolve('3'),
+])
+  .then(res => {
+    console.log('then', res);
+  })
+  .catch(err => {
+    // print catch e1
+    console.log('catch', err);
+  });
+```
+### Promise.race
+만약 reject(또는 resolve)가 발생하면, reject(또는 resolve)입니다.
+```javascript
+function delay(type: 'resolve' | 'reject', timeout: number) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (type === 'reject') {
+        reject(type);
+      } else {
+        resolve(type);
+      }
+    }, timeout);
+  });
+}
+// print then resolve
+Promise.race([delay('resolve', 1000), delay('reject', 2000)])
+  .then(res => {
+    console.log('then', res);
+  })
+  .catch(err => {
+    console.log('catch', err);
+  });
+
+ // print catch reject
+Promise.race([delay('resolve', 2000), delay('reject', 1000)])
+  .then(res => {
+    console.log('then', res);
+  })
+  .catch(err => {
+    console.log('catch', err);
+  });
+```
+
+## String.prototype.replaceAll
+일치하는 모든 문자열을 대체합니다.
+```javascript
+// 12c12d12
+'abcabdab'.replaceAll('ab', '12')
+// 12cabdab
+'abcabdab'.replace('ab', '12')
+```
+
+## ES2020
+## import.meta
+호스트 관련 모듈 메타 정보를 제공합니다.
+
+## 널 값 병합 연산자
+왼쪽 피연산자가 null 또는 undefined라면 오른쪽 피연산자가 반환됩니다.
+```javascript
+// "default"
+let a = null || "default"
+// "default"
+let a = null ?? "default"
+// "default"
+let a = "" || "default"
+// ""
+let a = "" ?? "default"
+// "default"
+let a = 0 || "default"
+// 0
+let a = 0 ?? "default"
+```
+## 옵셔널 체인
+아래 코드를 보세요.
+```javascript
+// without optional chaining
+const street = user.address && user.address.street;
+// optional chaining
+const street = user.address?.street
+```
+
+## BigInt
+2의 53제곱(자바스크립트 Number 타입이 표혈할 수 있는 가장 큰 수)보다 더 큰 수를 표현할 수 있습니다.
+```javascript
+// Add an n at the end of the number
+const theBiggestInt = 9007199254740991n;
+// Or call the BigInt constructor directly
+const alsoHuge = BigInt(9007199254740991);
+```
+
+## import
+모듈이 런타임에 동적으로 로드됩니다.
+
+## String.prototype.matchAll
+match는 일치하는 문자열만 반환할 수 있고, 그룹 정보는 반환하지 않습니다. matchAll은 일치하는 문자열과 그룹 정보를 반환할 수 있습니다.
+![matchAll](https://haeyum.notion.site/image/https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A700%2F1*pWAbRGgvyKb7HJBd3Wqzsg.png?id=0da9ef6c-836b-4fc5-807f-56c0b2f792ca&table=block&spaceId=c246955d-673f-42a3-b7a2-0b9a31a59058&width=2000&userId=&cache=v2)
+
+## 요약
+ES2016 ~ ES2019는 모두가 익숙하기 때문에 하나하나 리스트업하지 않았습니다. 만약 불분명한 기능이 있다면 소통을 위해 메시지를 남겨주세요. 
