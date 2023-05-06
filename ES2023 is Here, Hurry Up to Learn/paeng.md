@@ -87,7 +87,7 @@ console.log('no hashbang')
 
 ### 끝에서 부터 봅시다.
 
-**findLast / findLastIndex**는 두가지 기능에 관련이 있습니다.
+두 함수는 **findLast / findLastIndex**와 관련있습니다.
 
 ```js
 const array = [1, 2, 3];
